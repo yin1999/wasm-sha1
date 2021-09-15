@@ -15,6 +15,10 @@ export class Sha1Digest {
 * @returns {string}
 */
   finalize(): string;
+/**
+* @returns {Uint8Array}
+*/
+  finalize_bytes(): Uint8Array;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -25,6 +29,7 @@ export interface InitOutput {
   readonly sha1digest_new: () => number;
   readonly sha1digest_update: (a: number, b: number, c: number) => void;
   readonly sha1digest_finalize: (a: number, b: number) => void;
+  readonly sha1digest_finalize_bytes: (a: number) => number;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number) => void;
