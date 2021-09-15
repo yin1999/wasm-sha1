@@ -1,5 +1,7 @@
 use sha1::Sha1;
 use wasm_bindgen::prelude::*;
+use js_sys::Uint8Array;
+use js_sys::Array;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -24,7 +26,14 @@ impl Sha1Digest {
     pub fn update(&mut self, data: &[u8]) {
         self.hasher.update(data);
     }
+    
     pub fn finalize(&mut self) -> String {
         self.hasher.digest().to_string()
+    }
+
+    pub fn finalize_bytes(&mut self) -> Uint8Array {
+        let ans = self.hasher.digest().bytes();
+        let array: Array = ans.iter().map(|x| JsValue::from(*x as u8)).collect();
+        Uint8Array::new(&array)
     }
 }
