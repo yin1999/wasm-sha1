@@ -3,7 +3,7 @@
   "collaborators": [
     "yin1999 <15844309+yin1999@users.noreply.github.com>"
   ],
-  "version": "0.1.1",
+  "version": "0.1.2",
   "files": [
     "sha1_wasm_bg.wasm",
     "sha1_wasm.js",
