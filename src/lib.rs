@@ -1,13 +1,9 @@
-use sha1::Sha1;
-use wasm_bindgen::prelude::*;
+use std::fmt::write;
+
+use sha1::{Sha1, Digest};
+use wasm_bindgen::{prelude::*, throw_str};
 use js_sys::Uint8Array;
 use js_sys::Array;
-
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub struct Sha1Digest {
@@ -27,13 +23,23 @@ impl Sha1Digest {
         self.hasher.update(data);
     }
     
-    pub fn finalize(&mut self) -> String {
-        self.hasher.digest().to_string()
+    pub fn finalize(self) -> String {
+        let out = self.hasher.finalize();
+        let mut s = String::new();
+        for &byte in out.iter() {
+            match write(&mut s, format_args!("{:02x}", byte)) {
+                Err(e) => {
+                    throw_str(&e.to_string());
+                },
+                _ => (),
+            }
+        }
+        s
     }
 
-    pub fn finalize_bytes(&mut self) -> Uint8Array {
-        let ans = self.hasher.digest().bytes();
-        let array: Array = ans.iter().map(|x| JsValue::from(*x as u8)).collect();
+    pub fn finalize_bytes(self) -> Uint8Array {
+        let ans = self.hasher.finalize();
+        let array: Array = ans.iter().map(|&x| JsValue::from(x as u8)).collect();
         Uint8Array::new(&array)
     }
 }
